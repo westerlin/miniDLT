@@ -1,5 +1,7 @@
 ### Mini Distributed Ledger Midleware
 
+<span style="color:#f00;">WARNING - UNDER DEVELOPMENT AND VERY INCOMPLETE </span>
+
 This is a very initial attempt to create a simple DLT middleware software for managing af simple permissioned distributed ledger based on BlockChain
 
 The program is still very much under development as I am trying to establish the different parts
@@ -36,9 +38,9 @@ Then you have to start a fourth console
 
 `python3.6 cli.py`
 
-In the CLI you can send commands. The CLI will as a starting point send any command to localhost port 3301 which Node 0 listens to. When a Node receives an input from the CLI it will re-send the message to the other nodes on the network. Each Node recieving from a member node will just output a message.
+In the CLI you can send commands. The CLI will (as a starting point) send any command to localhost port 3401 which Node 0 listens to. When a Node receives an input from the CLI it will re-send the message to the other nodes on the network. Each Node recieving from a member node will just output a message.
 
-If you want to send a message to Node 1 you have to write to another port. This is done by writing
+If you want to send a message to another node you have to write to this nodes listening port. This is done by writing
 
 `>>Command:<portnumber>,<message>`
 
@@ -86,7 +88,7 @@ You can do a number of things on the blockchain object as is - but I will not do
 
 #### Concensus mechanism
 
-This mini DLT is supposed to be a permissioned DLT - that is users will be authenticated and thereby trusted. Specific roles will be assigned to Nodes so some nodes will act as endorsers, while others will have a special role of define exact order of new blocks. This follows the Hyperledger Fabrics architecture where the network is composed of PEERS (endorsers) and ORDERER (which finanlize the order of new blocks)
+This mini DLT is supposed to be a permissioned DLT - so users will be authenticated and thereby trusted. Specific roles will be assigned to nodes. Some nodes will act as endorsers while others will have a special role of defining the exact order of new blocks. This follows the Hyperledger Fabrics architecture where the network is composed of PEERS (endorsers) and ORDERERS (which finalize the order of new blocks)
 
 I am also considering the following concensus mechanism:
 
@@ -98,12 +100,12 @@ I am also considering the following concensus mechanism:
 6) When a node has recieved acceptence from all nodes it sends a message to all nodes that it has received full verification
 7) All nodes receives full verification from other nodes
 
-At this stage then
-
-  a) all nodes has verified the transaction. (own verification)
-  b) all nodes knows that all other nodes has accepted the transaction (full agreement on transaction)
-  c) all nodes know that all other nodes knows that all nodes has accepted the transaction (full concent)
-
+At this stage then:
+<ol type="a">
+  <li>all nodes has verified the transaction. (own verification)</li>
+  <li>all nodes knows that all other nodes has accepted the transaction (full agreement on transaction)</li>
+  <li>all nodes know that all other nodes knows that all nodes has accepted the transaction (full concent)</li>
+</ol>
 Therefore all can attach the block to it's blockchain
 
 I am not sure if this works - obviously this protocol/concensus is rather strict. If a single signal miss out - the transaction is dumped.
