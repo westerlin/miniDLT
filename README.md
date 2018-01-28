@@ -100,9 +100,9 @@ I am also considering the following concensus mechanism:
 
 At this stage then
 
-a) all nodes has verified the transaction. (own verification)
-b) all nodes knows that all other nodes has accepted the transaction (full agreement on transaction)
-c) all nodes know that all other nodes knows that all nodes has accepted the transaction (full concent)
+  a) all nodes has verified the transaction. (own verification)
+  b) all nodes knows that all other nodes has accepted the transaction (full agreement on transaction)
+  c) all nodes know that all other nodes knows that all nodes has accepted the transaction (full concent)
 
 Therefore all can attach the block to it's blockchain
 
