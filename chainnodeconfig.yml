@@ -1,0 +1,31 @@
+ChainNodeNet:
+
+  ChainNode01:
+    Name: Org01
+
+    Ports:
+      #Listening ports
+      CLI: 3401
+      DLT: 3402
+
+    DB: Block01
+
+  ChainNode02:
+    Name: Org02
+
+    Ports:
+      #Listening ports
+      CLI: 3411
+      DLT: 3412
+
+    DB: Block02
+
+  ChainNode03:
+    Name: Org03
+
+    Ports:
+      #Listening ports
+      CLI: 3421
+      DLT: 3422
+
+    DB: Block03

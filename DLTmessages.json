@@ -1,0 +1,82 @@
+{
+"Source":"76431fac8a187241af8f3f37156deb94732f52fb45eb07ec4f462051bd82f183",
+"Signature":"c26e1a65dda5e29532832f9b800f0c71526fdae93f42e8d4ab9dc4d28dd5754d",
+"MessageType":"Hello",
+"MessageBody":"Hello there",
+"MessageCode":0
+}
+
+{
+"Source":"76431fac8a187241af8f3f37156deb94732f52fb45eb07ec4f462051bd82f183",
+"Signature":"c26e1a65dda5e29532832f9b800f0c71526fdae93f42e8d4ab9dc4d28dd5754d",
+"MessageType":"Response",
+"MessageBody":{"Ekko":"<Message>","Result":"OK"},
+"MessageCode":0
+}
+
+{
+"Source":"76431fac8a187241af8f3f37156deb94732f52fb45eb07ec4f462051bd82f183",
+"Signature":"c26e1a65dda5e29532832f9b800f0c71526fdae93f42e8d4ab9dc4d28dd5754d",
+"MessageType":"Response",
+"MessageBody":{"Ekko":"<message>","Result":"Failed","Error":"<error specification>"},
+"MessageCode":-1
+}
+
+
+{
+"Source":"76431fac8a187241af8f3f37156deb94732f52fb45eb07ec4f462051bd82f183",
+"Signature":"c26e1a65dda5e29532832f9b800f0c71526fdae93f42e8d4ab9dc4d28dd5754d",
+"MessageType":"Propose Transaction",
+"MessageBody":{"transaction":"<content>"},
+"MessageCode":0
+}
+
+{
+"Source":"76431fac8a187241af8f3f37156deb94732f52fb45eb07ec4f462051bd82f183",
+"Signature":"c26e1a65dda5e29532832f9b800f0c71526fdae93f42e8d4ab9dc4d28dd5754d",
+"MessageType":"Endorse Block",
+"MessageBody":{"block":"<content>"},
+"MessageCode":0
+}
+
+{
+"Source":"76431fac8a187241af8f3f37156deb94732f52fb45eb07ec4f462051bd82f183",
+"Signature":"c26e1a65dda5e29532832f9b800f0c71526fdae93f42e8d4ab9dc4d28dd5754d",
+"MessageType":"Confirm Consent",
+"MessageBody":{"block":"<content>"},
+"MessageCode":0
+}
+
+{
+"Source":"76431fac8a187241af8f3f37156deb94732f52fb45eb07ec4f462051bd82f183",
+"Signature":"c26e1a65dda5e29532832f9b800f0c71526fdae93f42e8d4ab9dc4d28dd5754d",
+"MessageType":"Add Block",
+"MessageBody":{"block":"<content>"},
+"MessageCode":0
+}
+
+
+{
+"Source":"76431fac8a187241af8f3f37156deb94732f52fb45eb07ec4f462051bd82f183",
+"Signature":"c26e1a65dda5e29532832f9b800f0c71526fdae93f42e8d4ab9dc4d28dd5754d",
+"MessageType":"Compare Block",
+"MessageBody":{"block":"<content>"},
+"MessageCode":0
+}
+
+{
+"Source":"76431fac8a187241af8f3f37156deb94732f52fb45eb07ec4f462051bd82f183",
+"Signature":"c26e1a65dda5e29532832f9b800f0c71526fdae93f42e8d4ab9dc4d28dd5754d",
+"MessageType":"Compare Latest Hash",
+"MessageBody":{"block":"<content>"},
+"MessageCode":0
+}
+
+
+{
+"Source":"76431fac8a187241af8f3f37156deb94732f52fb45eb07ec4f462051bd82f183",
+"Signature":"c26e1a65dda5e29532832f9b800f0c71526fdae93f42e8d4ab9dc4d28dd5754d",
+"MessageType":"Request Blockchain",
+"MessageBody":{},
+"MessageCode":0
+}
