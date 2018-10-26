@@ -9,6 +9,8 @@ from blockchaindb import *
 
  Set BlockSize or timeout before nextblock is submitted
 
+ Simple change here from WS
+
 """
 
 PoW = 0
