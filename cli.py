@@ -1,4 +1,4 @@
-import socket
+import socket,os
 
 print("CLI interface")
 
@@ -26,9 +26,10 @@ while active:
         msg = words[0]
 
 
-    if msg != "exit":
+    if msg == "exit":
+        active = False
+    elif msg == "new":
+        os.system("start cmd /K \"nodestart 0\"") 
+    else:    
         sendMessage(port,msg)
         print(" (+) OK")
-    else:
-        #sendMessage(3411,cmd)
-        active = False
