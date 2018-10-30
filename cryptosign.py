@@ -30,7 +30,7 @@ class CryptographicSignature:
         self.public = self.signing.get_verifying_key()
         
     def getPublicKey(self):
-        return encode_hex(self.public.to_string())[0]
+        return str(encode_hex(self.public.to_string())[0],'utf-8')
         
     def signMessage(self,message,secretKey=None):
         if (secretKey):

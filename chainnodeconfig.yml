@@ -29,3 +29,13 @@ ChainNodeNet:
       DLT: 3422
 
     DB: Block03
+
+  ChainNode04:
+    Name: Org04
+
+    Ports:
+      #Listening ports
+      CLI: 3431
+      DLT: 3432
+
+    DB: Block04

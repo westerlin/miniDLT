@@ -1,15 +1,11 @@
 
-import threading, socket, time, json
-import importlib
-
-import yaml
+import threading, socket, time, json, importlib, yaml, sys
+from cryptosign import CryptographicSignature
 
 class Transaction:
     
     def __init__(self):
         pass
-    
-    
 
 class ChainNode:
 
@@ -27,6 +23,9 @@ class ChainNode:
         self.host = socket.gethostname()
         self.nodes = nodes
         self.name = node.name
+        self.signer = CryptographicSignature()
+        self.signer.generate()
+        
         self.DLTsocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.DLTsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.CLIsocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -37,6 +36,7 @@ class ChainNode:
         self.service1.deamon = True
         self.service2 = threading.Thread(target=self.__CLIlistener__)
         self.startServices()
+        
 
     def __log__(self,message):
         print("{}:{}:{}".format(self.name,time.ctime(time.time()),message))
@@ -44,8 +44,20 @@ class ChainNode:
     def startServices(self):
         self.service1.start()
         self.service2.start()
+        
+        aliveMessage = {"command":"alive","node":{"name":self.name,"host":self.host,"public":self.signer.getPublicKey()}}
+        self.__DLTbroadcast__(aliveMessage)
         #self.__log__("Services started")
 
+    def reportNodes(self):
+        self.__log__("Reporting on all nodes.")
+        for node in self.nodes:
+            if node.name != self.name:
+                if node.public:
+                    print("\n\tID:%s\n\tPublicKey:%s" %(node.name,node.public))
+                else:    
+                    print("\n\tID:%s\n\tPublicKey:No confirmed" %(node.name))
+                
     def __DLTlistener__(self):
         self.__log__("DLT service started")
         self.DLTsocket.bind((self.host,self.portDLT))
@@ -59,6 +71,16 @@ class ChainNode:
                 maxBytesToReceive = 1024
                 tm = clientsocket.recv(maxBytesToReceive)
                 self.__log__("  (-) DLT TX recieved:{}".format(tm.decode("utf-8")))
+                cmdmsg = json.loads(tm.decode("utf-8"))
+                if cmdmsg.get("command") == "alive":
+                    node = cmdmsg.get("node")
+                    nodeConfig = self.__getNodeByName__(node.get("name"))
+                    if nodeConfig:
+                        if not nodeConfig.public:
+                            aliveMessage = {"command":"alive","node":{"name":self.name,"host":self.host,"public":self.signer.getPublicKey()}}
+                            self.__DLTgossip__(aliveMessage,nodeConfig)
+                        nodeConfig.setPublicKey(node.get("public"))
+                        self.__log__("Received alive message from %s" %node.get("name"))
                 #currentTime = time.ctime(time.time())+"\r\n"
                 #time.sleep(timefreq)
                 #clientsocket.send(currentTime.encode("utf-8"))
@@ -66,26 +88,27 @@ class ChainNode:
             except socket.error:
                 pass
 
+    def __getNodeByName__(self,name):
+        for node in self.nodes:
+            if name == node.name: return node
+        return None
+
     def __DLTbroadcast__(self,message):
         for node in self.nodes:
-            if node.portDLT != self.portDLT and node.portCLI != self.portCLI:
-                try:
-                    socketclient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    socketclient.connect((node.host,node.portDLT))
-                    messageString = json.dumps(message).encode("utf-8")
-                    socketclient.send(messageString)
-                    socketclient.close()
-                    #socketclient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    #socketclient.connect((host,port))
-                    #socketclient.send(message.encode("utf-8"))
-                    #maxBytesToReceive = 1024
-                    #tm = socketclient.recv(maxBytesToReceive)
-                    #socketclient.close()
-                    self.__log__("    (+) TX send to {}:{}".format(node.host,node.portDLT))
-                    #print("The time got from the server is %s" % tm.decode("utf-8"))
-                except socket.error as e:
-                    #self.__log__("    (+) No connection to {}:{} - Error:{} ".format(host,port,e.strerror))
-                    pass
+            self.__DLTgossip__(message,node)
+
+    def __DLTgossip__(self,message,node):
+        if node.portDLT != self.portDLT and node.portCLI != self.portCLI:
+            try:
+                socketclient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                socketclient.connect((node.host,node.portDLT))
+                messageString = json.dumps(message).encode("utf-8")
+                socketclient.send(messageString)
+                socketclient.close()
+                self.__log__("    (+) TX send to {}:{}".format(node.host,node.portDLT))
+            except socket.error as e:
+                self.__log__("    (+) No connection to {}:{} - Error:{} ".format(self.host,self.portDLT,e.strerror))
+                pass
 
     def __CLIlistener__(self):
         self.CLIsocket.bind((self.host,self.portCLI))
@@ -104,6 +127,8 @@ class ChainNode:
                 self.__log__("Server closes down ... ")
             elif cmd.get("command") == "smart":
                 self.invokeSmartContract()
+            elif cmd.get("command") == "report":
+                self.reportNodes()
             else:
                 self.__log__("  (+) DLT message :{}".format(tm.decode("utf-8")))
                 self.__DLTbroadcast__(cmd)
@@ -123,8 +148,11 @@ class NodeConfig:
         self.portDLT = portDLT
         self.DB = DB
         self.host = socket.gethostname()
-
-import sys
+        self.public = None
+    
+    def setPublicKey(self,key):
+        self.public = key
+        print("Public key included",self.public)
 
 config_file_name = sys.argv[1]
 nodeNumber = int(sys.argv[2])

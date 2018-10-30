@@ -32,6 +32,8 @@ while active:
         os.system("start cmd /t:2A /K \"nodestart 0\"") 
         os.system("start cmd /t:3B /K \"nodestart 1\"") 
         os.system("start cmd /t:4C /K \"nodestart 2\"") 
+    elif msg == "xtra":
+        os.system("start cmd /t:B0 /K \"nodestart 3\"") 
     else:    
         #sendMessage(port,msg)
         messageObj = {"command":msg}
