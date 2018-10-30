@@ -1,5 +1,6 @@
 
-import threading, socket, time
+import threading, socket, time, json
+import importlib
 
 import yaml
 
@@ -64,7 +65,8 @@ class ChainNode:
                 try:
                     socketclient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     socketclient.connect((node.host,node.portDLT))
-                    socketclient.send(message.encode("utf-8"))
+                    messageString = json.dumps(message).encode("utf-8")
+                    socketclient.send(messageString)
                     socketclient.close()
                     #socketclient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                     #socketclient.connect((host,port))
@@ -87,15 +89,24 @@ class ChainNode:
             self.__log__("(+) CLI message from %s" % str(addr))
             maxBytesToReceive = 1024
             tm = clientsocket.recv(maxBytesToReceive)
-            if tm.decode("utf-8") == "stop":
+            cmd = json.loads(tm.decode("utf-8"))
+            if cmd.get("command") == "stop":
                 self.active = False
                 self.DLTsocket.close()
                 self.CLIsocket.close()
                 self.__log__("Server closes down ... ")
+            elif cmd.get("command") == "smart":
+                self.invokeSmartContract()
             else:
                 self.__log__("  (+) DLT message :{}".format(tm.decode("utf-8")))
-                self.__DLTbroadcast__(tm.decode("utf-8"))
+                self.__DLTbroadcast__(cmd)
                 #currentTime = time.ctime(time.time())+"\r\n"
+
+    def invokeSmartContract(self):
+        module = importlib.import_module("smartcontract")
+        SmartContract = getattr(module,"SmartContract")
+        contract = SmartContract()
+        self.__log__(contract.execute())
 
 class NodeConfig:
 

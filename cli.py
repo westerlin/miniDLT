@@ -1,4 +1,4 @@
-import socket,os
+import socket,os,json
 
 print("CLI interface")
 
@@ -29,7 +29,12 @@ while active:
     if msg == "exit":
         active = False
     elif msg == "new":
-        os.system("start cmd /K \"nodestart 0\"") 
+        os.system("start cmd /t:2A /K \"nodestart 0\"") 
+        os.system("start cmd /t:3B /K \"nodestart 1\"") 
+        os.system("start cmd /t:4C /K \"nodestart 2\"") 
     else:    
-        sendMessage(port,msg)
+        #sendMessage(port,msg)
+        messageObj = {"command":msg}
+        messageString = json.dumps(messageObj)
+        sendMessage(port,messageString)
         print(" (+) OK")
