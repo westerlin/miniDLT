@@ -12,3 +12,14 @@ SmartContract = getattr(module,"SmartContract")
 contract = SmartContract()
 #self.__log__(contract.execute())
 print(contract.execute())
+
+from cryptosign import CryptographicSignature
+
+mysign = CryptographicSignature()
+
+mysign.generate()
+print(mysign.getPublicKey())
+
+mysignature,binSignature = mysign.signMessage("HelloWorld")
+print(mysignature)
+print(mysign.verifyMessage("HelloWorld",mysignature))

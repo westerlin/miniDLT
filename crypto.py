@@ -1,6 +1,6 @@
 import os
 import hashlib
-import base58
+#import base58
 import binascii
 import ecdsa
 import codecs
@@ -67,8 +67,10 @@ def example_sign_verify_msg():
     signed_msg = sk.sign(msg.encode('utf-8'))
     # Creates verifying key (public key) object from string
     vk = ecdsa.VerifyingKey.from_string(decode_hex(public_key_str)[0],curve=ecdsa.SECP256k1)
-    print(msg)
+    print("The message was:",msg)
     print(str(encode_hex(signed_msg)[0],'utf-8'))
     # Verifies signed message  based on verifikation key object
     vk.verify(signed_msg,msg.encode('utf-8'))
 #================
+
+example_sign_verify_msg()
