@@ -143,6 +143,7 @@ input.rounded {
 
 input.rounded:hover {
         margin-top:0.5px;
+        margin-bottom:0.5px;
         margin-left:2px;
         padding-top:5.5px;
         height: 29.5px;

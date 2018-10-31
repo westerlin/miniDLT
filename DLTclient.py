@@ -19,6 +19,22 @@ app = Flask(__name__)
 host = socket.gethostname()
 port = 3401
 
+prvkey="d29b78965e174980a4f41a3ffe35b74b6ac601271e884eda23f18f6281386106"
+user="Rasmus"
+
+def sign(message):
+    msgObj = message
+    if msgObj.get("key"):
+        cryptoPen = CryptographicSignature(msgObj["key"])
+        if msgObj.get("payload"):
+            signature = cryptoPen.signMessage(json.dumps(msgObj["payload"]))
+            #print(signature)
+            msgObj["signature"]=signature
+            msgObj.pop("key")
+            msgObj.pop("port")
+            return json.dumps(msgObj)
+    return json.dumps(message)
+
 def sendMessage(port, message):
     try:
         socketclient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -32,7 +48,7 @@ def sendMessage(port, message):
 
 def call_miniDLT(data):
     jsMsgObj = json.loads(data.decode())
-    return sendMessage(jsMsgObj["port"],json.dumps(jsMsgObj["payload"]))
+    return sendMessage(jsMsgObj["port"],sign(jsMsgObj))
 
 @app.route("/")
 @app.route("/home")

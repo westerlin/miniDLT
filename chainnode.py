@@ -1,10 +1,15 @@
 import threading, socket, time, json, importlib, yaml, sys
-from cryptosign import CryptographicSignature
+from cryptosign import CryptographicSignature,verifyMessage
 
 class Transaction:
     
     def __init__(self):
         pass
+
+
+def verifySignature(message,publickey):
+    if message.get("payload") and message.get("signature"):
+        return verifyMessage(json.dumps(message["payload"]),message["signature"],publickey)
 
 class ChainNode:
 
@@ -16,7 +21,7 @@ class ChainNode:
     refused due to previous hash mismatch (maybe because another was linked in)
     """
 
-    def __init__(self,node,nodes):
+    def __init__(self,node,nodes,publickey):
         self.portCLI = node.portCLI
         self.portDLT = node.portDLT
         self.host = socket.gethostname()
@@ -24,7 +29,7 @@ class ChainNode:
         self.name = node.name
         self.signer = CryptographicSignature()
         self.signer.generate()
-        
+        self.publickey = publickey
         self.DLTsocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.DLTsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.CLIsocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -125,24 +130,30 @@ class ChainNode:
             maxBytesToReceive = 1024
             tm = clientsocket.recv(maxBytesToReceive)
             cmd = json.loads(tm.decode("utf-8"))
-            if cmd.get("command") == "stop":
-                self.active = False
-                self.DLTsocket.close()
-                self.CLIsocket.close()
-                self.__log__("Server closes down ... ")
-                clientsocket.send(json.dumps({"response":"OK","message":"Server closes down"}).encode('utf-8'))
-            elif cmd.get("command") == "smart":
-                self.invokeSmartContract()
-                clientsocket.send(json.dumps({"response":"OK","message":"Smart contract was invoked"}).encode('utf-8'))
-            elif cmd.get("command") == "report":
-                report = {}
-                report["report"] = self.reportNodes()
-                clientsocket.send(json.dumps({"response":"OK","message":report}).encode('utf-8'))
+            if verifySignature(cmd,self.publickey):
+                cmd = cmd["payload"]
+                if cmd.get("command") == "stop":
+                    self.active = False
+                    self.DLTsocket.close()
+                    self.CLIsocket.close()
+                    self.__log__("Server closes down ... ")
+                    clientsocket.send(json.dumps({"response":"OK","message":"Server closes down"}).encode('utf-8'))
+                elif cmd.get("command") == "smart":
+                    self.invokeSmartContract()
+                    clientsocket.send(json.dumps({"response":"OK","message":"Smart contract was invoked"}).encode('utf-8'))
+                elif cmd.get("command") == "report":
+                    report = {}
+                    report["report"] = self.reportNodes()
+                    clientsocket.send(json.dumps({"response":"OK","message":report}).encode('utf-8'))
+                else:
+                    self.__log__("  (+) DLT message :{}".format(tm.decode("utf-8")))
+                    self.__DLTbroadcast__(cmd)
+                    clientsocket.send(json.dumps({"response":"OK","message":"Echoing message onto miniDLT network"}).encode('utf-8'))
+                    #currentTime = time.ctime(time.time())+"\r\n"
             else:
-                self.__log__("  (+) DLT message :{}".format(tm.decode("utf-8")))
-                self.__DLTbroadcast__(cmd)
-                clientsocket.send(json.dumps({"response":"OK","message":"Echoing message onto miniDLT network"}).encode('utf-8'))
-                #currentTime = time.ctime(time.time())+"\r\n"
+                self.__log__("  (-) DLT message :{}".format(tm.decode("utf-8")))
+                clientsocket.send(json.dumps({"response":"Error","message":"TX was not correctly signed."}).encode('utf-8'))
+
 
     def invokeSmartContract(self):
         module = importlib.import_module("smartcontract")
@@ -175,27 +186,31 @@ with open(config_file_name) as data_file:
 nodes = []
 
 try:
-    for key in config["ChainNodeNet"].keys():
+    Nodes = config["ChainNodeNet"]["Nodes"]
+    users = config["ChainNodeNet"]["Users"]
+    publickey=users["User00"]["PublicKey"]
+    for key in Nodes.keys():
         #oda = config["ChainNodeNet"][key]["hjh"]
-        node = config["ChainNodeNet"][key]
-        name = config["ChainNodeNet"][key]["Name"]
-        portCLI = int(config["ChainNodeNet"][key]["Ports"]["CLI"])
-        portDLT = int(config["ChainNodeNet"][key]["Ports"]["DLT"])
-        db = config["ChainNodeNet"][key]["DB"]
+        node = Nodes[key]
+        name = Nodes[key]["Name"]
+        portCLI = int(Nodes[key]["Ports"]["CLI"])
+        portDLT = int(Nodes[key]["Ports"]["DLT"])
+        db = Nodes[key]["DB"]
         nodeConfig = NodeConfig(name,portCLI,portDLT,db)
         nodes.append(nodeConfig)
-except KeyError:
+except KeyError as error:
     print("ERROR: Node config for {} was not properly formed".format(key))
     print("Name: <name>")
     print("     Ports:")
     print("         CLI: #000")
     print("         DLT: #000")
     print("     DB: <dbname>")
+    print(error)
 finally:
     print("Configurations was loaded. Network consists of {} nodes.".format(len(nodes)))
     if nodeNumber < len(nodes):
         print("ChainNode {} will start".format(nodes[nodeNumber].name))
-        ChainNode(nodes[nodeNumber],nodes)
+        ChainNode(nodes[nodeNumber],nodes,publickey)
     else:
         print("Requested node {} which was not defined.".format(nodeNumber))
 

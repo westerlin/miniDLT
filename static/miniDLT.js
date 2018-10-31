@@ -45,7 +45,8 @@ function log(text){
 function sendMessage(){
         msgObj = document.getElementById("message");
         portObj = document.getElementById("port");
-        data = JSON.stringify({"payload":{"command":msgObj.value},"port":parseInt(portObj.value)});
+        keyObj = document.getElementById("private");
+        data = JSON.stringify({"payload":{"command":msgObj.value},"port":parseInt(portObj.value),"key":keyObj.value});
         url = "http://localhost:5000/miniDLT";
         if (!ajax(url,data,receiver))
             log("Something went wrong when communicating with rest-API..");

@@ -3,7 +3,7 @@ ChainNodeNet:
   Users:
     User00:
       Name: Rasmus
-      PublicKey: b3883353d54d8f90832b90d5b0d23493a075942142a1ada4be675ffd954548cf
+      PublicKey: 94023ca3a9d5463cdc16a7a5c734a422596509c3876adee8a049839ccdd12837926e10a7a0dd69522278017c8a9ebe6770ac0fe662eba259f73418cfe883cbf7
       Gateway: 
         - ChainNode01
         - ChainNode02
@@ -14,42 +14,43 @@ ChainNodeNet:
         - nodeinvoker
         - policyinvoker
 
-  ChainNode01:
-    Name: Org01
+  Nodes:
+    ChainNode01:
+      Name: Org01
 
-    Ports:
-      #Listening ports
-      CLI: 3401
-      DLT: 3402
+      Ports:
+        #Listening ports
+        CLI: 3401
+        DLT: 3402
 
-    DB: Block01
+      DB: Block01
 
-  ChainNode02:
-    Name: Org02
+    ChainNode02:
+      Name: Org02
 
-    Ports:
-      #Listening ports
-      CLI: 3411
-      DLT: 3412
+      Ports:
+        #Listening ports
+        CLI: 3411
+        DLT: 3412
 
-    DB: Block02
+      DB: Block02
 
-  ChainNode03:
-    Name: Org03
+    ChainNode03:
+      Name: Org03
 
-    Ports:
-      #Listening ports
-      CLI: 3421
-      DLT: 3422
+      Ports:
+        #Listening ports
+        CLI: 3421
+        DLT: 3422
 
-    DB: Block03
+      DB: Block03
 
-  ChainNode04:
-    Name: Org04
+    ChainNode04:
+      Name: Org04
 
-    Ports:
-      #Listening ports
-      CLI: 3431
-      DLT: 3432
+      Ports:
+        #Listening ports
+        CLI: 3431
+        DLT: 3432
 
-    DB: Block04
+      DB: Block04

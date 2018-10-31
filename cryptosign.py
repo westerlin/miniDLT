@@ -42,7 +42,7 @@ class CryptographicSignature:
             signature = externalSigningKey.sign(message.encode('utf-8'))
         else:
             signature = self.signing.sign(message.encode('utf-8'))
-        return str(encode_hex(signature)[0],'utf-8'),signature
+        return str(encode_hex(signature)[0],'utf-8')
     
     def verifyMessage(self,message,signature):
         try:
@@ -50,3 +50,12 @@ class CryptographicSignature:
             return True
         except ecdsa.keys.BadSignatureError:
             return False
+
+
+def verifyMessage(message,signature,key):
+    keyObj = ecdsa.VerifyingKey.from_string(decode_hex(key)[0],curve=ecdsa.SECP256k1)
+    try:
+        assert keyObj.verify(decode_hex(signature)[0],message.encode('utf-8'))
+        return True
+    except ecdsa.keys.BadSignatureError:
+        return False
