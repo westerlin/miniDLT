@@ -1,5 +1,19 @@
 ChainNodeNet:
 
+  Users:
+    User00:
+      Name: Rasmus
+      PublicKey: b3883353d54d8f90832b90d5b0d23493a075942142a1ada4be675ffd954548cf
+      Gateway: 
+        - ChainNode01
+        - ChainNode02
+      Roles:
+        - admin
+        - contractinvoker
+        - userinvoker
+        - nodeinvoker
+        - policyinvoker
+
   ChainNode01:
     Name: Org01
 

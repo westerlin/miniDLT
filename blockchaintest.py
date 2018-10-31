@@ -142,9 +142,9 @@ def standard():
 
     #assetCode = "ae96f7d70a379a1a64feb65f30feb5209bd7089d4c568ca8fb86510284c205bd"
     blocks = myblockchain.getBlocks(criteria='%"ISIN": "{}"%'.format(assetCode))
+    print(blocks[0])
 
-
-    print(myblockchain.getBlock(100))
+    #print(myblockchain.getBlock(100))
     #blocks = myblockchain.getBlocks(200,10)
 """
     for block in blocks:
