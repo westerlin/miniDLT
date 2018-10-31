@@ -1,0 +1,59 @@
+<html>
+  <head>
+    <title>Mini DLT Client</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <script src="{{ url_for('static', filename='miniDLT.js') }}" type="text/javascript" ></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='miniDLT.css') }}" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body onload="init()">
+      <div class="sideview">
+       <i class="material-icons active">account_balance</i>
+       <i class="material-icons active">account_balance_wallet</i>
+       <i class="material-icons active">build</i>
+       <i class="material-icons active">fingerprint</i>
+       <i class="material-icons active">extension</i>
+       <i class="material-icons active">settings</i>
+       <i class="material-icons disabled">cloud</i>
+       <i class="material-icons disabled">my_location</i>
+      </div>
+      
+      <div class="pane">
+          <div class="panel">
+            <H3> mini DLT Client </H3>
+            <div class="panel_form">
+                <p> Simple one-liners for a DLT-node </p>
+                
+                <div class="minorpanel">
+                    <div class="floating">
+                        <p>Port: <p/>
+                        <input type="text" value="3401" /> 
+                    </div>
+                    <div class="floating">
+                        <p>Message: <p/>
+                        <input type="text" value="" style="width:700px;" placeholder="message for server"/> 
+                    </div>
+                    <div class="floating">
+                        <p>&nbsp; <p/>
+                        <input type="button" class="rounded" value="send" /> 
+                    </div>
+                    
+                    <span class="clear"></span>
+                </div>    
+            </div>
+            
+          
+           
+            
+           </div>
+            <div id="logger" class="logger"  >
+            
+            </div>
+
+
+
+      </div>
+        <span class="clear"></span>
+  
+  </body>
+</html>
