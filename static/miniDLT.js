@@ -44,17 +44,34 @@ function sendMessage(){
       }
 
 
+function sendRaw(msg,port){
+        data = JSON.stringify({"request":"user"});
+        url = "http://localhost:5000/json";
+        if (!ajax(url,data,receiver))
+            log("Something went wrong when communicating with rest-API..");
+      }
+
+
 function receiver(req){
         if (req.status==200){
-                message = JSON.parse(req.responseText);
+                response = JSON.parse(req.responseText);
                 
-                strjson = JSON.stringify(message["message"],replacer);
+                strjson = JSON.stringify(response["message"],replacer);
                 strjson = strjson.split("\"").join("");
                 strjson = strjson.split("{").join("{<ul class=\"logentry\">");
                 strjson = strjson.split("}").join("</ul><span class=\"logentry\">}</span>");
                 strjson = strjson.split("[").join("<ul class=\"logentry\">");
                 strjson = strjson.split("]").join("</ul>");
                 strjson = strjson.split(",").join(",<br/>");
+                
+                keys = response["message"]["base"];
+                if (keys) {
+                        obj = document.getElementById("prvkey")
+                        obj.value = keys["privateKey"];
+                        obj = document.getElementById("pubkey")
+                        obj.value = keys["publicKey"];
+                    }
+                
                 //strjson = strjson.split("\"").join();
                 //strjson = strjson.replaceAll("{","<ul class=\"logentry\">");
                 //strjson = strjson.replaceAll("}","</ul>");
@@ -69,6 +86,7 @@ function receiver(req){
 function init() {
          log("Servers are online .. ");
          log("Mini DLT is up and running");
+         showPanel(0);
         }
 
 function onEnterDown(callback){
@@ -80,7 +98,7 @@ function replacer(name, val) {
     // convert RegExp to string
     if ( val && val.constructor === RegExp ) {
         return val.toString();
-    } else if ( name === 'publicKey' ) { // 
+    } else if ( name.indexOf('Key') >0 && val.length>16) { // 
         return beautifyKey(val); // remove from result
     } else {
         return val; // return as is
@@ -88,14 +106,27 @@ function replacer(name, val) {
 }
     
 function beautifyKey(value){
-        fraction = Math.floor(value.length/8);
+        fraction = Math.floor(value.length/16);
         count = 0;
         output = "";
-        while ((count)*fraction <= value.length) {
-            newval = value.slice(count*fraction,(count+1)*fraction);
+        while ((count) <= fraction) {
+            newval = value.slice(count*16,(count+1)*16);
             if (newval.length>0)
                 output += newval+"<br/>";
             count++;                
         }
         return "[["+output+"]]";
  }
+        
+function showPanel(number){
+        panels = document.getElementsByClassName("panel_form");
+        console.log(panels.lenght)
+        for (i=0;i<panels.length;i++){
+                if (i != number){
+                    console.log("Hiding panel "+i)
+                    panels[i].classList.add("hide");
+                } else {
+                    panels[i].classList.remove("hide");
+            }
+     }
+   }

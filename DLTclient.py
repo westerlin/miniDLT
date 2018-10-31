@@ -9,7 +9,9 @@ set FLASK_DEBUG=1
 """
 
 from flask import Flask, request, render_template, jsonify
-import os,socket,json
+import socket,json
+from cryptosign import CryptographicSignature
+
 #import hashlib
 
 app = Flask(__name__)
@@ -41,7 +43,10 @@ def home():
 def my_form_post():
     print("Received input")
     print(request.data)
-    return jsonify({"message":"Hello there"})
+    cryptosigner = CryptographicSignature()
+    cryptosigner.generate()
+    ct = CryptographicSignature(cryptosigner.getPrivateKey())
+    return jsonify({"message":{"base":{"privateKey":cryptosigner.getPrivateKey(),"publicKey":cryptosigner.getPublicKey()},"control":{"privateKey":ct.getPrivateKey(),"publicKey":ct.getPublicKey()}} })
 
 @app.route('/miniDLT', methods=['POST','GET'])
 def ping_miniDLT():

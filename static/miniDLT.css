@@ -46,6 +46,7 @@ html,body {
         font-family:"Verdana";
        }
 
+
 div.floating {
   float:left;
 }
@@ -66,6 +67,24 @@ input {
 
 span.clear { clear: left; display: block; }
 
+.panel_form{
+    position:absolute;        
+    transition-property: visibility, opacity;
+    transition-duration: 0s, 1s;
+        }
+
+.hide {
+    opacity: 0;
+    visibility: hidden;
+    transition-property: opacity, visibility;
+    transition-duration: 1s, 0s;
+    transition-delay: 0s, 1s;
+ }
+
+@keyframes showNav {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
 .minorpanel {
         background-color:#544;
         border-radius:2px;
