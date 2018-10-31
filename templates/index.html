@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <title>Mini DLT Client</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <script src="{{ url_for('static', filename='miniDLT.js') }}" type="text/javascript" ></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='miniDLT.css') }}" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body onload="init()">
+  
+  
+      <div class="sideview">
+       <br/>
+       <i class="material-icons active" onclick="showPanel(0);">extension</i>
+       <i class="material-icons active" onclick="showPanel(1);">fingerprint</i>
+       <i class="material-icons disabled">account_balance</i>
+       <i class="material-icons disabled">account_balance_wallet</i>
+       <i class="material-icons disabled">build</i>
+       <i class="material-icons disabled">settings</i>
+       <i class="material-icons disabled">cloud</i>
+       <i class="material-icons disabled">my_location</i>
+      </div>
+      
+      <div class="pane">
+      
+        <div class="panel">
+            <H3> mini DLT Client </H3>
+            
+             <!--- All panelforms - navigated by SideView -->
+             
+            <div class="panel_form hide">
+                <p> Simple one-liners for a DLT-node </p>
+                <div class="minorpanel">
+                    <div>
+                        <div class="floating">
+                            <p>Node host: <p/>
+                            <input id="host" type="text" value="localhost" placeholder="Port number" style="width:400px;"/> 
+                        </div>
+                        <div class="floating">
+                            <p>Node port: <p/>
+                            <input id="port" type="text" value="3401" placeholder="Port number"/> 
+                        </div>
+                        <span class="clear"></span>
+                    </div>    
+                        <div >
+                            <p>Message: <p/>
+                            <input id="message" type="text" value="" style="width:560px;" placeholder="message for server" onkeyup="onEnterDown(sendMessage)"/> 
+                        </div>
+                        
+                        <div >
+                            <input type="button" class="rounded" value="send" onclick="sendMessage()" /> 
+                        </div>
+                        
+                </div> <!--- End of minorpanel --- Component Container for elements -->
+            </div> <!--- End of panel_form 01 --- Component Container for elements -->
+            
+
+            <div class="panel_form hide">
+                <p> User Credentials </p>
+                <div class="minorpanel">
+                    <div >
+                        <p>Private Key: <p/>
+                        <input id="prvkey" type="text" value="" style="width:800px;font-size:10px;font-family:Courier;line-height:23px;" placeholder="(privatekey)" onkeyup="onEnterDown(sendRaw)"/> 
+                    </div>
+                    <div >
+                        <p>Public Key: <p/>
+                        <input id="pubkey" type="text" value="" style="width:800px;font-size:10px;font-family:Courier;line-height:23px;" placeholder="(publickey)" onkeyup="onEnterDown(sendRaw)"/> 
+                    </div>
+                        
+                    <div >
+                        <input type="button" class="rounded" value="request" onclick="sendRaw()" /> 
+                    </div>
+                        
+                    </div>    
+                </div> <!--- End of minorpanel --- Component Container for elements -->
+            </div> <!--- End of panel_form 01 --- Component Container for elements -->
+
+
+        <div id="logger" class="logger"  >
+        </div> 
+
+        </div> <!--- End of panel --- Component Container for panel_forms -->
+           
+
+      </div> <!--- End of pane --- Component right of sideView -->
+      <span class="clear"></span>
+  
+  </body>
+</html>

@@ -15,11 +15,12 @@ encode_hex = codecs.getencoder("hex_codec")
 class CryptographicSignature:
     
     def __init__(self,privatekey=None):
-        self.private = privatekey
         if (privatekey):
-            self.signing = ecdsa.SigningKey.from_string(privatekey, curve=ecdsa.SECP256k1)
+            self.private = decode_hex(privatekey)[0]
+            self.signing = ecdsa.SigningKey.from_string(decode_hex(privatekey)[0], curve=ecdsa.SECP256k1)
             self.public = self.signing.get_verifying_key()
         else:
+            self.private = None
             self.signing = None
             self.public = None
     
@@ -31,6 +32,9 @@ class CryptographicSignature:
         
     def getPublicKey(self):
         return str(encode_hex(self.public.to_string())[0],'utf-8')
+    
+    def getPrivateKey(self):
+        return str(encode_hex(self.private)[0],'utf-8')
         
     def signMessage(self,message,secretKey=None):
         if (secretKey):
