@@ -25,20 +25,27 @@
                 <p> Simple one-liners for a DLT-node </p>
                 
                 <div class="minorpanel">
+                <div>
                     <div class="floating">
-                        <p>Port: <p/>
-                        <input type="text" value="3401" /> 
+                        <p>Node host: <p/>
+                        <input id="host" type="text" value="localhost" placeholder="Port number" style="width:400px;"/> 
                     </div>
                     <div class="floating">
+                        <p>Node port: <p/>
+                        <input id="port" type="text" value="3401" placeholder="Port number"/> 
+                    </div>
+                    <span class="clear"></span>
+                </div>    
+                    <div >
                         <p>Message: <p/>
-                        <input type="text" value="" style="width:700px;" placeholder="message for server"/> 
-                    </div>
-                    <div class="floating">
-                        <p>&nbsp; <p/>
-                        <input type="button" class="rounded" value="send" /> 
+                        <input id="message" type="text" value="" style="width:560px;" placeholder="message for server" onkeyup="onEnterDown(sendMessage)"/> 
                     </div>
                     
-                    <span class="clear"></span>
+                    <div >
+                        <p>&nbsp; <p/>
+                        <input type="button" class="rounded" value="send" onclick="sendMessage()" /> 
+                    </div>
+                    
                 </div>    
             </div>
             

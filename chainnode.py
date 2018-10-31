@@ -1,4 +1,3 @@
-mm
 import threading, socket, time, json, importlib, yaml, sys
 from cryptosign import CryptographicSignature
 
@@ -51,12 +50,18 @@ class ChainNode:
 
     def reportNodes(self):
         self.__log__("Reporting on all nodes.")
+        output = {}
+        i=0
         for node in self.nodes:
             if node.name != self.name:
                 if node.public:
+                    output["dltNode%d"%i] = {"name":node.name,"clientListenerPort":node.portCLI,"DLTListenerPort":node.portDLT,"host":node.host,"publicKey":node.public}
                     print("\n\tID:%s\n\tPublicKey:%s" %(node.name,node.public))
                 else:    
+                    output[node.name] = "Not confirmed"
                     print("\n\tID:%s\n\tPublicKey:No confirmed" %(node.name))
+                i=i+1    
+        return output
                 
     def __DLTlistener__(self):
         self.__log__("DLT service started")
@@ -76,7 +81,7 @@ class ChainNode:
                     node = cmdmsg.get("node")
                     nodeConfig = self.__getNodeByName__(node.get("name"))
                     if nodeConfig:
-                        if not nodeConfig.public:
+                        if not nodeConfig.public or nodeConfig.public !=node.get("public"):
                             aliveMessage = {"command":"alive","node":{"name":self.name,"host":self.host,"public":self.signer.getPublicKey()}}
                             self.__DLTgossip__(aliveMessage,nodeConfig)
                         nodeConfig.setPublicKey(node.get("public"))
@@ -125,13 +130,18 @@ class ChainNode:
                 self.DLTsocket.close()
                 self.CLIsocket.close()
                 self.__log__("Server closes down ... ")
+                clientsocket.send(json.dumps({"response":"OK","message":"Server closes down"}).encode('utf-8'))
             elif cmd.get("command") == "smart":
                 self.invokeSmartContract()
+                clientsocket.send(json.dumps({"response":"OK","message":"Smart contract was invoked"}).encode('utf-8'))
             elif cmd.get("command") == "report":
-                self.reportNodes()
+                report = {}
+                report["report"] = self.reportNodes()
+                clientsocket.send(json.dumps({"response":"OK","message":report}).encode('utf-8'))
             else:
                 self.__log__("  (+) DLT message :{}".format(tm.decode("utf-8")))
                 self.__DLTbroadcast__(cmd)
+                clientsocket.send(json.dumps({"response":"OK","message":"Echoing message onto miniDLT network"}).encode('utf-8'))
                 #currentTime = time.ctime(time.time())+"\r\n"
 
     def invokeSmartContract(self):

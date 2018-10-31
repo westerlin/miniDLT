@@ -9,10 +9,28 @@ set FLASK_DEBUG=1
 """
 
 from flask import Flask, request, render_template, jsonify
-#import os,socket,json
+import os,socket,json
 #import hashlib
 
 app = Flask(__name__)
+
+host = socket.gethostname()
+port = 3401
+
+def sendMessage(port, message):
+    try:
+        socketclient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        socketclient.connect((host,port))
+        socketclient.send(message.encode("utf-8"))
+        data = socketclient.recv(1024)
+        socketclient.close()
+        return True,data
+    except socket.error:
+        return False,None
+
+def call_miniDLT(data):
+    jsMsgObj = json.loads(data.decode())
+    return sendMessage(jsMsgObj["port"],json.dumps(jsMsgObj["payload"]))
 
 @app.route("/")
 @app.route("/home")
@@ -24,6 +42,15 @@ def my_form_post():
     print("Received input")
     print(request.data)
     return jsonify({"message":"Hello there"})
+
+@app.route('/miniDLT', methods=['POST','GET'])
+def ping_miniDLT():
+    res,data = call_miniDLT(request.data)
+    if res:
+        #jsMsgObj = json.loads(request.data.decode())
+        return data
+    else:
+        return jsonify({"message":"There was an error while contacting Node."})
 
 if __name__ == '__main__':
     app.run(debug=True)
