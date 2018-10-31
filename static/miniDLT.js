@@ -26,10 +26,18 @@ function ajax(url,data,callback) {
         return true;
         }
 
+
+
 function log(text){
         obj = document.getElementById("logger");
         if(obj)
-            obj.innerHTML += "<p class=\"logentry\">"+text+"</p>";
+            date = new Date();
+            logtimer = date.toTimeString().slice(0,8)+" ";
+            logtimer += ("0" + (date.getDay())).slice(-2)+"-";
+            logtimer += ("0" + (date.getMonth() +　1)).slice(-2)+"-";
+            logtimer += (""+date.getYear()).slice(-2);
+            
+            obj.innerHTML += "<p class=\"logentry\">"+logtimer+": "+text+"</p>";
             obj.scrollTop = obj.scrollHeight-obj.offsetHeight -1;
         }        
 
@@ -56,7 +64,7 @@ function receiver(req){
         if (req.status==200){
                 response = JSON.parse(req.responseText);
                 
-                strjson = JSON.stringify(response["message"],replacer);
+                strjson = JSON.stringify(response["message"],replacer).slice(1, -1);
                 strjson = strjson.split("\"").join("");
                 strjson = strjson.split("{").join("{<ul class=\"logentry\">");
                 strjson = strjson.split("}").join("</ul><span class=\"logentry\">}</span>");

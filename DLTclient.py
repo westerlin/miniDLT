@@ -45,8 +45,10 @@ def my_form_post():
     print(request.data)
     cryptosigner = CryptographicSignature()
     cryptosigner.generate()
-    ct = CryptographicSignature(cryptosigner.getPrivateKey())
-    return jsonify({"message":{"base":{"privateKey":cryptosigner.getPrivateKey(),"publicKey":cryptosigner.getPublicKey()},"control":{"privateKey":ct.getPrivateKey(),"publicKey":ct.getPublicKey()}} })
+    #ct = CryptographicSignature(cryptosigner.getPrivateKey())
+    #tidligere valideringscheck her- men det virker 
+    #ct er en reetablering ud fra privatekey streng fra Cryptosigner
+    return jsonify({"message":{"base":{"privateKey":cryptosigner.getPrivateKey(),"publicKey":cryptosigner.getPublicKey()} } })
 
 @app.route('/miniDLT', methods=['POST','GET'])
 def ping_miniDLT():
