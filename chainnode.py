@@ -29,6 +29,8 @@ class ChainNode:
         self.name = node.name
         self.signer = CryptographicSignature()
         self.signer.generate()
+        self.contract = None
+        self.module = None
         self.publickey = publickey
         self.DLTsocket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         self.DLTsocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -138,7 +140,17 @@ class ChainNode:
                     self.CLIsocket.close()
                     self.__log__("Server closes down ... ")
                     clientsocket.send(json.dumps({"response":"OK","message":"Server closes down"}).encode('utf-8'))
-                elif cmd.get("command") == "smart":
+                elif cmd.get("command") == "instantiate":
+                    if self.instantiateSmartContract():
+                        clientsocket.send(json.dumps({"response":"OK","message":"Smart contract was instantiated."}).encode('utf-8'))
+                    else:    
+                        clientsocket.send(json.dumps({"response":"FAIL","message":"Smart contract was not instantiated. (see log for node for error)"}).encode('utf-8'))
+                elif cmd.get("command") == "update":
+                    if self.updateSmartContract():
+                        clientsocket.send(json.dumps({"response":"OK","message":"Smart contract was updated."}).encode('utf-8'))
+                    else:    
+                        clientsocket.send(json.dumps({"response":"FAIL","message":"Smart contract was not updated, because it is not instantiated."}).encode('utf-8'))
+                elif cmd.get("command") == "invoke":
                     result = self.invokeSmartContract()
                     clientsocket.send(json.dumps({"response":"OK","message":"Smart contract was invoked:[%s]"%result}).encode('utf-8'))
                 elif cmd.get("command") == "report":
@@ -155,13 +167,32 @@ class ChainNode:
                 clientsocket.send(json.dumps({"response":"Error","message":"TX was not correctly signed."}).encode('utf-8'))
 
 
+    def updateSmartContract(self):
+        if (self.module):
+            self.module = importlib.reload(self.module)
+            self.contract = self.module.SmartContract()
+            return True
+        else:
+            return False
+
+    def instantiateSmartContract(self):
+        try:
+            self.module = importlib.import_module("smartcontract")
+            SmartContract = getattr(self.module,"SmartContract")
+            self.contract = SmartContract()
+            return True
+        except Exception as error:
+            self.__log__(error)
+            return False
+
     def invokeSmartContract(self):
-        module = importlib.import_module("smartcontract")
-        SmartContract = getattr(module,"SmartContract")
-        contract = SmartContract()
-        res = contract.execute()
-        self.__log__(res)
-        return res
+        if (self.contract):
+            res = self.contract.execute()
+            self.__log__(res)
+            return res
+        else:
+            return "Smart Contract is not invoked."
+
 
 class NodeConfig:
 

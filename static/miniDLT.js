@@ -68,11 +68,13 @@ function receiver(req){
                 strjson = JSON.stringify(response["message"],replacer).slice(1, -1);
                 strjson = strjson.split("\"").join("");
                 strjson = strjson.split("{").join("{<ul class=\"logentry\">");
-                strjson = strjson.split("}").join("</ul><span class=\"logentry\">}</span>");
+                strjson = strjson.split("},").join("</ul>}<br/>");
+                //strjson = strjson.split("}").join("</ul>}");
                 strjson = strjson.split("[").join("<ul class=\"logentry\">");
                 strjson = strjson.split("]").join("</ul>");
-                strjson = strjson.split(",").join(",<br/>");
-                
+                strjson = strjson.split("%%,").join("<br/>");
+                strjson = strjson.split("%%").join("");
+                strjson = "<span class=\"logentry\">"+strjson+"</span>";
                 keys = response["message"]["base"];
                 if (keys) {
                         obj = document.getElementById("prvkey")
@@ -85,6 +87,7 @@ function receiver(req){
                 //strjson = strjson.replaceAll("{","<ul class=\"logentry\">");
                 //strjson = strjson.replaceAll("}","</ul>");
                 //strjson = strjson.replaceAll(",",",<br/>");
+                if (typeof response["message"] === 'object') strjson = "A JSON Object was sent in response:<br/><br/>"+strjson;
                 log(strjson);
                 }
         else {
@@ -106,9 +109,11 @@ function onEnterDown(callback){
 function replacer(name, val) {
     // convert RegExp to string
     if ( val && val.constructor === RegExp ) {
-        return val.toString();
+        return val.toString()+"<br/><br/><br/>";
     } else if ( name.indexOf('Key') >0 && val.length>16) { // 
         return beautifyKey(val); // remove from result
+    } else if ( typeof val === 'string' || typeof val === 'number'||typeof val === 'boolean' ||typeof val === 'date' ) {   
+       return val + "%%";
     } else {
         return val; // return as is
     }
@@ -124,7 +129,7 @@ function beautifyKey(value){
                 output += newval+"<br/>";
             count++;                
         }
-        return "[["+output+"]]";
+        return "["+output+"]";
  }
         
 function showPanel(number){
@@ -139,3 +144,17 @@ function showPanel(number){
             }
      }
    }
+                
+function changeVisibility(inputId, iconId){
+        inputObj = document.getElementById(inputId);
+        iconObj = document.getElementById(iconId);
+        if (inputObj && iconObj){
+            if (inputObj.type == "password") {
+                    inputObj.type ="text";
+                    iconObj.innerHTML = "visibility";
+                } else {
+                    inputObj.type ="password";
+                    iconObj.innerHTML = "visibility_off";
+                }
+            }
+        }                

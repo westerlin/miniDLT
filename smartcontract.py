@@ -11,4 +11,4 @@ class SmartContract:
         pass
     
     def execute(self):
-        return "Smart contract was succesfully executed."
+        return "Smart contract was succesfully executed. But can be changed dynamically.asdsad"

@@ -182,3 +182,16 @@ ul.logentry{
         overflow:auto;
         border-top: #877 solid .5px;
         }
+
+.secretIco {
+        position:relative;
+        left:-55px;
+        top:3px;
+        float:right;
+        z-index:2;
+        color:#544;
+        }
+
+.secretIco:hover {
+        color:#A99;
+        }
