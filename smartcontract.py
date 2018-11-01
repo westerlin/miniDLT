@@ -11,4 +11,4 @@ class SmartContract:
         pass
     
     def execute(self):
-        return "Succesfully Executed"
+        return "Smart contract was succesfully executed."

@@ -8,7 +8,6 @@
   </head>
   <body onload="init()">
   
-  
       <div class="sideview">
        <br/>
        <i class="material-icons active" onclick="showPanel(0);">extension</i>
@@ -42,20 +41,19 @@
                         </div>
                         <span class="clear"></span>
                     </div>    
-                        <div >
-                            <p>Message: <p/>
-                            <input id="message" type="text" value="" style="width:560px;" placeholder="message for server" onkeyup="onEnterDown(sendMessage)"/> 
-                        </div>
-                        <div >
-                            <p>Private Key: <p/>
-                            <input id="private" type="password" value="d29b78965e174980a4f41a3ffe35b74b6ac601271e884eda23f18f6281386106" style="width:800px;font-size:10px;font-family:Courier;line-height:23px;" placeholder="message for server" onkeyup="onEnterDown(sendMessage)"/> 
-                        </div>
-                        
-                        <div >
-                            <br/>
-                            <input type="button" class="rounded" value="send" onclick="sendMessage()" /> 
-                        </div>
-                        
+                    <div >
+                        <p>Message: <p/>
+                        <input id="message" type="text" value="" style="width:560px;" placeholder="message for server" onkeyup="onEnterDown(sendMessage)"/> 
+                    </div>
+                    <div >
+                        <p>Private Key: <p/>
+                        <input id="private" type="password" value="d29b78965e174980a4f41a3ffe35b74b6ac601271e884eda23f18f6281386106" style="width:800px;font-size:10px;font-family:Courier;line-height:23px;" placeholder="message for server" onkeyup="onEnterDown(sendMessage)"/> 
+                    </div>
+                    
+                    <div >
+                        <br/>
+                        <input type="button" class="rounded" value="send" onclick="sendMessage()" /> 
+                    </div>
                 </div> <!--- End of minorpanel --- Component Container for elements -->
             </div> <!--- End of panel_form 01 --- Component Container for elements -->
             
@@ -73,6 +71,7 @@
                     </div>
                         
                     <div >
+                        <br/>
                         <input type="button" class="rounded" value="request" onclick="sendRaw()" /> 
                     </div>
                         

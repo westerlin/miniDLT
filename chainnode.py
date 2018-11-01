@@ -139,8 +139,8 @@ class ChainNode:
                     self.__log__("Server closes down ... ")
                     clientsocket.send(json.dumps({"response":"OK","message":"Server closes down"}).encode('utf-8'))
                 elif cmd.get("command") == "smart":
-                    self.invokeSmartContract()
-                    clientsocket.send(json.dumps({"response":"OK","message":"Smart contract was invoked"}).encode('utf-8'))
+                    result = self.invokeSmartContract()
+                    clientsocket.send(json.dumps({"response":"OK","message":"Smart contract was invoked:[%s]"%result}).encode('utf-8'))
                 elif cmd.get("command") == "report":
                     report = {}
                     report["report"] = self.reportNodes()
@@ -159,7 +159,9 @@ class ChainNode:
         module = importlib.import_module("smartcontract")
         SmartContract = getattr(module,"SmartContract")
         contract = SmartContract()
-        self.__log__(contract.execute())
+        res = contract.execute()
+        self.__log__(res)
+        return res
 
 class NodeConfig:
 
