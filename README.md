@@ -92,13 +92,13 @@ This mini DLT is supposed to be a permissioned DLT - so users will be authentica
 
 I am also considering the following concensus mechanism:
 
-1) A new transaction is send to network
-2) Recipient Node - sends the transaction to all other nodes.
-3) All nodes verifies the transaction
-4) If the transaction checks out - the Node informs all other nodes on this
-5) All nodes collect acceptance for all nodes
-6) When a node has recieved acceptence from all nodes it sends a message to all nodes that it has received full verification
-7) All nodes receives full verification from other nodes
+ 1) A new transaction is send to network
+ 2) Recipient Node - sends the transaction to all other nodes.
+ 3) All nodes verifies the transaction
+ 4) If the transaction checks out - the Node informs all other nodes on this
+ 5) All nodes collect acceptance for all nodes
+ 6) When a node has recieved acceptence from all nodes it sends a message to all nodes that it has received full verification
+ 7) All nodes receives full verification from other nodes
 
 At this stage then:
 <ol type="a">
@@ -109,3 +109,64 @@ At this stage then:
 Therefore all can attach the block to it's blockchain
 
 I am not sure if this works - obviously this protocol/concensus is rather strict. If a single signal miss out - the transaction is dumped.
+
+### Development
+
+Following will be a checklist of items for future development:
+
+ - SSL encryption of all client-to-restAPI, restAPI-to-Node, Node-to-Node
+ - Signature verification on all intranode communication
+ - User object in Node
+ - Policy object (see below)
+ - Enrollment of new users (no consensus - user role driven)
+ - Enrollment of new nodes (no concensus - user role driven)
+ - Implementation of blockchain object 
+ - Begin on protocol (see below)
+ - Explore possibility of having configuration nested in genesis node
+ - Explore possibility of submitting smart contract (initially "dead" code) 
+ - Build a stub/shim object for smart contracts to interact with blockchain
+
+#### Protocol
+
+There is a number of actions/messages that needs to be in place for nodes to interact and share. Here we list what we need to do:
+
+ - "Alive"(Broadcast/Single response): New nodes should announce themselves and recipient Nodes should verify from internal node database if it is a legitimate new Node joining and respond to new node.
+ - "Blocks" (Broadcast/Single response): A Node should ask for update blocks from the peers. One of these should respond and send the it's local copy. This should maybe be partioned into more steps - where Node asking for blocks awknowledges from which node it will receive blocks. This in order to ensure heavy loads are not send across network for no reason.
+ - "Syncronise" (Broadcast/Single response): A node will ask for latest has from all peers. They will respond by sending their latest hash-block for verification. Maybe confirmation from initiating node the responses have been received and that they match (Idea - is this a policy again)
+
+
+##### A protocol Class
+
+Consider to enclose all protocol related stuf into a protocol class. The class should as starters could create a fully "stamped" message based on a payload (the real message) and sender information. This should also include signing the message via privatekey input and possibly extend signature and public key.
+
+A sample message could look like
+
+```
+message = {
+    sender: {
+        name:<sender id>
+        organisation: <org id>
+    }
+    recipient:{
+        name:<recipient id>
+        organisation: <org id>
+    }
+    payload: {
+        size: <size in bytes of content>
+        timestamp: <datetime of origination>
+        signature: <signature of message and to be verified by recipient>
+        content: {
+
+                here goes the real message
+        }
+    }
+}
+```
+
+Please note that public key is not send. Public key are shared across the network when a new node or user is announced. 
+
+```
+publickey: <public key> (always shared - is this a problem - recipient should check this key)        
+```
+
+For the reasons above - functionality on announcing nodes and users has to be defined. Maybe possible to dump to configurations yaml- files in case the whole network crashes and has to be reinstated. This is highly insecure - so a solution involving storing these information on the blockchain as a part of concensus and policy has to be considered.
