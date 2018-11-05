@@ -22,6 +22,18 @@ The two proof-of-concepts above will in concert support that Nodes can communica
 
 #### Quick start - DLT Nodes
 
+##### Versioning and Dependent modules
+
+Everything is done in Python 3.6
+
+Following modules are required:
+
+ - ecdsa (use "pip install ecdsa")
+ - yaml (use "pip install pyyaml)
+ - couchdb (clone from github and do python setup.py install)
+
+##### Starting up
+
 You can start the nodes by running
 
 `python3.6 chainnode.py <config file> <node number>`
