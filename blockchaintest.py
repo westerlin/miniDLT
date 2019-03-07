@@ -61,7 +61,7 @@ def standard():
     if False:
         blocks = []
         newblock=myblockchain.getlastBlock()
-        for x in range(100):
+        for x in range(10000):
             newblock = nextBlock(newblock,genTestTransaction())
             blocks.append(newblock)
         myblockchain.storage.addBlocks(blocks)

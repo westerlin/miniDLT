@@ -14,7 +14,7 @@ prev2 = time.time()
 print(d["url"])
 couch = couchdb.Server(d["url"])
 
-couch.create("mydb")
+#couch.create("mydb")
 
 print("trying to connect to %s" %d["db"])
 db = couch[d["db"]]
@@ -47,19 +47,20 @@ otherdoc = {
 
 }
 
-db.save(otherdoc)
+#db.save(otherdoc)
 
 #mango = {'selector': {'block': 'testing'},'fields': ['name'],'sort':[{'name': 'asc'}]}
-mango = {'selector': {'block': 'testing'},'fields': ['name']}
+#mango = {'selector': {'block': 'testing'},'fields': ['name']}
+mango = {'selector': {"payload":{"transaction":{'buyer': 'pl'}}}, "fields":["payload.transaction.isin"]}
 #mango = {'selector': {'block': 'testing'}}
 prev = time.time()
 output = []
 for a in range(1):
     for row in db.find(mango):
-        output.append(row["name"])  
+        output.append(row)  
         
 ending = time.time()
-#print(output)
+print(output)
 print("Total find-time:",ending-prev)    
 print("Total connect-time:",prev-prev2)    
 print("Total runtime:",ending-prev1)    
