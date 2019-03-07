@@ -51,7 +51,10 @@ otherdoc = {
 
 #mango = {'selector': {'block': 'testing'},'fields': ['name'],'sort':[{'name': 'asc'}]}
 #mango = {'selector': {'block': 'testing'},'fields': ['name']}
+
 mango = {'selector': {"payload":{"transaction":{'buyer': 'pl'}}}, "fields":["payload.transaction.isin"]}
+
+mango = {'selector': {'sender': {'userid':"raw"}},'fields': ['payload.transaction.isin']}
 #mango = {'selector': {'block': 'testing'}}
 prev = time.time()
 output = []
